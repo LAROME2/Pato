@@ -1,0 +1,21 @@
+
+html * {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+nav{
+    background-color: aliceblue;
+    
+}
+
+.nav-item{
+    margin-left :35px ;
+    margin-bottom: auto;
+    margin-top: auto;
+    height: max-content;
+}
+
+.imagen_t{
+    width: 68px;
+    height: auto;
+}
