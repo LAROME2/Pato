@@ -11,8 +11,10 @@ cursor.execute('''
         id_Usuario INTEGER,
         id_Sucursal INTEGER,
         tiempo TIMESTAMP DEFAULT (datetime('now', 'localtime')),
-        temperatura REAL;
-    
+        temperatura REAL,
+        alarma BOOL,
+        wifi_datos TEXT,
+        bat_elec TEXT;
     
     )
 ''')
