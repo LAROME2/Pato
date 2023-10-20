@@ -4,6 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms.fields import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 import unittest
+import sqlite3
 
 app = Flask(__name__)
 
