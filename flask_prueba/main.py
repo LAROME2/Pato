@@ -5,12 +5,8 @@ from wtforms.fields import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 import unittest
 import sqlite3
+import pandas as pd
 
-conn = sqlite3.connect('matt_data.sqlite')
-cursor = conn.cursor()
-cursor.execute("SELECT * FROM mqtt_data")
-data = cursor.fetchall()
-conn.close()
 
 app = Flask(__name__)
 
@@ -47,6 +43,10 @@ def index():
 
 @app.route('/viz', methods=['GET','POST'])
 def viz():
+    conn = sqlite3.connect('matt_data.sqlite')
+    df = pd.read_sql_query("SELECT * FROM nombre_de_la_tabla", conn)
+    conn.close()
+
     return render_template('viz.html')
 @app.route ('/hello', methods=['GET','POST'])
 def hello():
