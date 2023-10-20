@@ -12,3 +12,5 @@ Podemos extender un ORM SQL: https://flask-sqlalchemy.palletsprojects.com/en/2.x
 export FLASK_APP=main.py 
 flask run
 export FLASK_DEBUG=1
+
+SELECT tiempo,temperatura FROM mqtt_data WHERE id_refri = 1;
