@@ -19,3 +19,15 @@ nav{
     width: 68px;
     height: auto;
 }
+
+iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 90%;
+    height: 100%;
+    margin-top: 6%;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+

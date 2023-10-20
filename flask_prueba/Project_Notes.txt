@@ -8,3 +8,7 @@ Que se llama
 Flask no tiene un ORM por defecto.
 Podemos implementar la lógica para usar la BD que queramos
 Podemos extender un ORM SQL: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
+
+export FLASK_APP=main.py 
+flask run
+export FLASK_DEBUG=1

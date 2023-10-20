@@ -38,6 +38,9 @@ def index():
 
     return response
 
+@app.route('/viz', methods=['GET','POST'])
+def viz():
+    return render_template('viz.html')
 @app.route ('/hello', methods=['GET','POST'])
 def hello():
 
