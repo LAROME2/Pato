@@ -8,3 +8,5 @@ flask-bootstrap
 flask-wtf
 flask-testing
 pandas
+matplotlib
+plotly
