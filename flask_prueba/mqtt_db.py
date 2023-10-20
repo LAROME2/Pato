@@ -10,23 +10,23 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("equipoPATO")
 
 def on_message(client, userdata, msg):
-    topic = msg.topic
+    #topic = msg.topic
     payload = msg.payload.decode("utf-8", "ignore")
 
     try:
         data = json.loads(payload)  # Parseamos el mensaje JSON
         print("Mensaje recibido:")
-        print("Tópico:", topic)
+        #print("Tópico:", topic)
         print("Datos:", data)
 
         # Conectar a la base de datos SQLite o crearla si no existe
-        conn = sqlite3.connect("mqtt_data.sqlite")
+        conn = sqlite3.connect("flask_prueba/mqtt_data.sqlite")
         cursor = conn.cursor()
 
         # Insertar los datos en la tabla de la base de datos
         cursor.execute(
-            "INSERT INTO mqtt_data (topic, dispositivo, tipo, dato) VALUES (?, ?, ?, ?)",
-            (topic, data.get("dispositivo"), "temperatura", data.get("dato")),)
+            "INSERT INTO mqtt_data (id_Refri, temperatura, alarma, wifi_datos,bat_elec) VALUES (?, ?, ?, ?, ?)",
+            (data.get("id_Refri"), data.get("temperatura"), data.get("alarma"),data.get("wifi_datos"),data.get("bat_elec") ),)
 
 
         # Guardar los cambios y cerrar la conexión

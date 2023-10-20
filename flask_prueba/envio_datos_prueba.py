@@ -7,11 +7,14 @@ import json
 # Función para simular una base de datos y generar datos aleatorios
 def obtener_datos_simulados():
     # En este ejemplo, generamos un valor de temperatura aleatorio entre 20 y 30 grados Celsius.
-    temperatura = round(random.uniform(-20, 12), 2)
+    temperatura = round(random.uniform(2, 28), 2)
     
     data = {
-        "Entrada": "Prueba 1",
-        "Temperatura": temperatura
+        "id_Refri": 1,
+        "temperatura": temperatura,
+        "alarma": False,
+        "wifi_datos":"Wifi",
+        "bat_elec":"Corriente",
     }
 
     # Convertir el diccionario en una cadena JSON
