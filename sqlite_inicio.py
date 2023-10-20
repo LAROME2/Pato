@@ -12,8 +12,6 @@ cursor.execute('''
         id_Sucursal INTEGER,
         tiempo TIMESTAMP DEFAULT (datetime('now', 'localtime')),
         temperatura REAL;
-    
-    
     )
 ''')
 
