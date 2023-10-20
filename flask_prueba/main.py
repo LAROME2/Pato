@@ -43,11 +43,13 @@ def index():
 
 @app.route('/viz', methods=['GET','POST'])
 def viz():
-    conn = sqlite3.connect('matt_data.sqlite')
+    conn = sqlite3.connect('mqtt_data.sqlite')
     df = pd.read_sql_query("SELECT * FROM nombre_de_la_tabla", conn)
     conn.close()
+    tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
 
-    return render_template('viz.html')
+    return render_template('viz.html',tabla_html=tabla_html)
+
 @app.route ('/hello', methods=['GET','POST'])
 def hello():
 
