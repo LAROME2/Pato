@@ -51,9 +51,9 @@ def viz():
     conn.close()
     tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
 
-    fig = px.bar(tabla1, x='id', y='dato', labels={'dato': 'Dato', 'id': 'ID'}, title='Gráfica de Datos')
-    
-    return render_template('viz.html',tabla_html=tabla_html, tabla1=tabla1)
+    fig = px.line(tabla1, x='id', y='dato', title='Gráfica de Datos')
+
+    return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html())
 
 @app.route ('/hello', methods=['GET','POST'])
 def hello():

@@ -4,6 +4,6 @@
     <!-- <iframe src="https://www.economia.gob.mx/datamexico/" frameborder="0"></iframe> -->
     <h1>Tabla de Datos</h1>
     {{ tabla_html | safe }}
-    tabla1.plot(x='dato',y='id')
-    plt.show()
+    <h1>Gráfica de Datos</h1>
+    {{ plot | safe }}
 {% endblock %}
