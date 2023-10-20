@@ -6,6 +6,12 @@ from wtforms.validators import DataRequired
 import unittest
 import sqlite3
 
+conn = sqlite3.connect('matt_data.sqlite')
+cursor = conn.cursor()
+cursor.execute("SELECT * FROM mqtt_data")
+data = cursor.fetchall()
+conn.close()
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'SUPER SECRETO'
