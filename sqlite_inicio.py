@@ -7,12 +7,13 @@ cursor = conn.cursor()
 # Crear la tabla "mqtt_data" si no existe
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS mqtt_data (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        topic TEXT,
-        dispositivo TEXT,
-        tipo TEXT,
-        dato REAL,
-        tiempo TIMESTAMP DEFAULT (datetime('now', 'localtime'))
+        id_Refri INTEGER PRIMARY KEY AUTOINCREMENT,
+        id_Usuario INTEGER,
+        id_Sucursal INTEGER,
+        tiempo TIMESTAMP DEFAULT (datetime('now', 'localtime')),
+        temperatura REAL;
+    
+    
     )
 ''')
 
