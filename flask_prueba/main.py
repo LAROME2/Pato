@@ -46,13 +46,14 @@ def index():
 @app.route('/viz', methods=['GET','POST'])
 def viz():
     conn = sqlite3.connect('mqtt_data.sqlite')
-    df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 5", conn)
+    df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 10", conn)
     tabla1 = df[["tiempo","temperatura"]]
     conn.close()
     tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
 
-    fig = px.line(tabla1, x='tiempo', y='temperatura', title='Gráfica de Datos')
-    
+    fig = px.line(tabla1, x='tiempo', y='temperatura',text='temperatura')
+    fig.update_traces(textposition="bottom right")
+
 
     return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html())
 
