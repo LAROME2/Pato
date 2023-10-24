@@ -46,7 +46,7 @@ def index():
 @app.route('/viz', methods=['GET','POST'])
 def viz():
     conn = sqlite3.connect('mqtt_data.sqlite')
-    df = pd.read_sql_query("SELECT * FROM mqtt_data", conn)
+    df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 5", conn)
     tabla1 = df[["tiempo","temperatura"]]
     conn.close()
     tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)

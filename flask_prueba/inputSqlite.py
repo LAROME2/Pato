@@ -5,7 +5,7 @@ cursor = conn.cursor()
 
 cursor.execute('''
     INSERT INTO mqtt_data (id_Refri,temperatura,alarma,wifi_datos,bat_elec)
-        VALUES(1,23,0,"Wifi","Corriente")
+        VALUES(1,20,0,"Wifi","Corriente")
 ''')
 
 conn.commit()
