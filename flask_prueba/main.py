@@ -47,11 +47,11 @@ def index():
 def viz():
     conn = sqlite3.connect('mqtt_data.sqlite')
     df = pd.read_sql_query("SELECT * FROM mqtt_data", conn)
-    tabla1 = df[["id","temperatura"]]
+    tabla1 = df[["tiempo","temperatura"]]
     conn.close()
     tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
 
-    fig = px.line(tabla1, x='id', y='temperatura', title='Gráfica de Datos')
+    fig = px.line(tabla1, x='tiempo', y='temperatura', title='Gráfica de Datos')
     
 
     return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html())
