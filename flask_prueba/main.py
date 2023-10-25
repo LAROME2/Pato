@@ -8,8 +8,9 @@ import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
+#from datetime import datetime
 
-
+#now = datetime.now()
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'SUPER SECRETO'
@@ -44,7 +45,9 @@ def index():
     return response
 
 @app.route('/viz', methods=['GET','POST'])
+
 def viz():
+    
     conn = sqlite3.connect('mqtt_data.sqlite')
     df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 10", conn)
     tabla1 = df[["tiempo","temperatura"]]
