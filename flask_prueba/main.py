@@ -8,14 +8,13 @@ import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
-#from datetime import datetime
 
-#now = datetime.now()
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'SUPER SECRETO'
 
-todos = ['Cafe 1','Carne 2', 'Quesos 3']
+todos = ['Caf 1','leche 2', 'Quesos 3']
 bootstrap = Bootstrap(app)
 
 class LoginForm(FlaskForm):
@@ -36,6 +35,15 @@ def not_Found(error):
 def not_found(error):
     return render_template('500.html',error=error)
 
+@app.errorhandler(500)
+def not_found(error):
+    return render_template('500.html',error=error)
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    return render_template('login.html')
+
 @app.route ('/')
 def index():
     user_ip = request.remote_addr
@@ -45,18 +53,15 @@ def index():
     return response
 
 @app.route('/viz', methods=['GET','POST'])
-
 def viz():
-    
     conn = sqlite3.connect('mqtt_data.sqlite')
-    df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 10", conn)
+    df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 5", conn)
     tabla1 = df[["tiempo","temperatura"]]
     conn.close()
     tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
 
-    fig = px.line(tabla1, x='tiempo', y='temperatura',text='temperatura')
-    fig.update_traces(textposition="bottom right")
-
+    fig = px.line(tabla1, x='tiempo', y='temperatura', title='Gráfica de Datos')
+    
 
     return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html())
 
