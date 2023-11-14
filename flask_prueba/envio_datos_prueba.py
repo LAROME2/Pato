@@ -10,7 +10,7 @@ def obtener_datos_simulados():
     temperatura = round(random.uniform(2, 28), 2)
     
     data = {
-        "id_Refri": 1,
+        "id_Refri": 2,
         "temperatura": temperatura,
         "alarma": False,
         "wifi_datos":"Wifi",

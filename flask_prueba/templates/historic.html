@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Tabla de Datos</h1>
+    <h1>Scrollable Table</h1>
     
-    <form method="GET" action="{{ url_for('viz') }}">
+    <form method="GET" action="{{ url_for('historic') }}">
         <label for="refri">Seleccione un Refri:</label>
         <select name="refri" id="refri">
             {% for refri in refris %}
@@ -12,14 +12,10 @@
         </select>
         <input type="submit" value="Submit">
     </form>
-    
-    {{ tabla_html | safe }}
 
-    <h1>Gráfica de Datos para Refri {{ selected_refri }}</h1>
-    {{ plot | safe }}
+    <h2>Lista de Refris Disponibles:</h2>
     
-    <div style="margin-top: 20px;">
-        <h3>Latest Temperature: {{ latest_temperature }}°C</h3>
-        <p>Latest Date: {{ latest_date }}</p>
+    <div style="overflow-y: auto; max-height: 800px;">
+        {{ tabla_html | safe }}
     </div>
 {% endblock %}

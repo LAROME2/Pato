@@ -18,6 +18,12 @@ nav{
     margin-bottom: 0 !important;
 }
 
+.navbar-nav.mr-auto li {
+    font-size: 1.8rem;
+    margin-top:3%;
+    margin-right: 0; /* Elimina el espacio derecho para el enlace de Login */
+}
+
 iframe {
     position: fixed;
     top: 0;

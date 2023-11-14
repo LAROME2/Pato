@@ -22,6 +22,18 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Enviar')
 
+def get_refris():
+    conn = sqlite3.connect('mqtt_data.sqlite')
+    df = pd.read_sql_query("SELECT DISTINCT id_Refri FROM mqtt_data", conn)
+    conn.close()
+    return df["id_Refri"].tolist()
+
+def filter_data(selected_refri):
+    conn = sqlite3.connect('mqtt_data.sqlite')
+    df = pd.read_sql_query(f"SELECT * FROM mqtt_data WHERE id_Refri = {selected_refri} ORDER BY tiempo DESC", conn)
+    conn.close()
+    return df
+
 @app.cli.command()
 def test():
     tests = unittest.TestLoader().discover('tests')
@@ -54,16 +66,68 @@ def index():
 
 @app.route('/viz', methods=['GET','POST'])
 def viz():
-    conn = sqlite3.connect('mqtt_data.sqlite')
-    df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 5", conn)
-    tabla1 = df[["tiempo","temperatura"]]
-    conn.close()
-    tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
+    if request.method == 'GET':
+        conn = sqlite3.connect('mqtt_data.sqlite')
+        df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 10", conn)
+        conn.close()
 
-    fig = px.line(tabla1, x='tiempo', y='temperatura', title='Gráfica de Datos')
-    
+        # Extracting data for the table
+        tabla1 = df[["tiempo","temperatura"]]
+        
+        # Get unique refris
+        refris = list(df["id_Refri"].unique())
 
-    return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html())
+        # Get the selected refri from the request
+        selected_refri = request.args.get('refri', refris[0])  # Default to the first refri if not specified
+
+        # Filter the DataFrame based on the selected refri
+        filtered_df = df[df['id_Refri'] == int(selected_refri)]
+
+        latest_temperature = filtered_df.iloc[0]['temperatura']
+        latest_date = filtered_df.iloc[0]['tiempo']
+
+        tabla_html = filtered_df.to_html(classes='table table-bordered table-striped', index=False)
+
+        fig = px.line(filtered_df, x='tiempo', y='temperatura',text='temperatura')
+        fig.update_traces(textposition="bottom right")
+
+        return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html(), refris=refris, selected_refri=selected_refri, latest_temperature=latest_temperature, latest_date=latest_date)
+        
+    elif requet.method == "POST":
+        conn = sqlite3.connect('mqtt_data.sqlite')
+        df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 10", conn)
+        conn.close()
+
+        # Extracting data for the table
+        tabla1 = df[["tiempo","temperatura"]]
+        
+        # Get unique refris
+        refris = list(df["id_Refri"].unique())
+
+        # Get the selected refri from the request
+        selected_refri = request.args.get('refri', refris[0])  # Default to the first refri if not specified
+
+        # Filter the DataFrame based on the selected refri
+        filtered_df = df[df['id_Refri'] == int(selected_refri)]
+
+        tabla_html = filtered_df.to_html(classes='table table-bordered table-striped', index=False)
+
+        fig = px.line(filtered_df, x='tiempo', y='temperatura',text='temperatura')
+        fig.update_traces(textposition="bottom right")
+
+        return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html(), refris=refris, selected_refri=selected_refri)
+
+@app.route('/historic', methods=['GET', 'POST'])
+def historic():
+    if request.method == 'GET':
+        refris = get_refris()
+        selected_refri = request.args.get('refri', refris[0])  # Default to the first refri if not specified
+        df = filter_data(selected_refri)
+
+        # Creating an HTML table from the filtered DataFrame
+        tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
+
+        return render_template('historic.html', tabla_html=tabla_html, refris=refris, selected_refri=selected_refri)
 
 @app.route ('/hello', methods=['GET','POST'])
 def hello():
