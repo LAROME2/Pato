@@ -12,8 +12,6 @@ from flask_login import LoginManager
 from flask_login import UserMixin, login_user, login_required, logout_user, current_user
 from flask import url_for, request
 
-
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SUPER SECRETO'
 login_manager = LoginManager(app)
