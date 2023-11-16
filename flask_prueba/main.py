@@ -113,10 +113,13 @@ def viz():
         tabla1 = df[["tiempo", "temperatura"]]
         tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
 
+        latest_temperature = df.iloc[0]['temperatura']
+        latest_date = df.iloc[0]['tiempo']
+
         fig = px.line(tabla1, x='tiempo', y='temperatura', text='temperatura')
         fig.update_traces(textposition="bottom right")
 
-        return render_template('viz.html', tabla_html=tabla_html, plot=fig.to_html(), refris=refris, selected_refri=selected_refri)
+        return render_template('viz.html', tabla_html=tabla_html, plot=fig.to_html(), refris=refris, selected_refri=selected_refri, latest_date=latest_date, latest_temperature=latest_temperature)
 
 
 @app.route('/historic', methods=['GET', 'POST'])
