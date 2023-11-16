@@ -8,19 +8,75 @@ import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
+from flask_login import LoginManager
+from flask_login import UserMixin, login_user, login_required, logout_user, current_user
+from flask import url_for, request
+
 
 
 app = Flask(__name__)
-
 app.config['SECRET_KEY'] = 'SUPER SECRETO'
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
-todos = ['Caf 1','leche 2', 'Quesos 3']
+todos = ['Caf 1','leche 2', 'Quesos 3'] 
 bootstrap = Bootstrap(app)
+
+class User(UserMixin):
+    def __init__(self, username):
+        self.username = username
+
+users = {'freezo': {'password': '12345'}}
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
 
 class LoginForm(FlaskForm):
     username = StringField('Nombre de Usuario', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Enviar')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        print(f"Entered username: {username}")
+        print(f"Entered password: {password}")
+
+
+        if username in users and password == users[username]['password']:
+            print("Login successful!")  # Add this print statement
+            user = User(username)
+            login_user(user)
+            flash('Inicio de sesión exitoso.', 'success')
+            return redirect(url_for('index'))
+        else:
+            print("Login failed!")  # Add this print statement
+            flash('Credenciales incorrectas. Inténtalo de nuevo.', 'danger')
+
+    return render_template('login.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Sesión cerrada.', 'info')
+    return redirect(url_for('login'))
+
+@app.route('/')
+@login_required
+def index():
+    return render_template('index.html')
+
+# class LoginForm(FlaskForm):
+#     username = StringField('Nombre de Usuario', validators=[DataRequired()])
+#     password = PasswordField('Password', validators=[DataRequired()])
+#     submit = SubmitField('Enviar')
 
 def get_refris():
     conn = sqlite3.connect('mqtt_data.sqlite')
@@ -91,17 +147,17 @@ def not_found(error):
     return render_template('500.html',error=error)
 
 
-@app.route('/login', methods=['GET','POST'])
-def login():
-    return render_template('login.html')
+# @app.route('/login', methods=['GET','POST'])
+# def login():
+#     return render_template('login.html')
 
-@app.route ('/')
-def index():
-    user_ip = request.remote_addr
-    response = make_response(redirect('/hello'))
-    session['user_ip'] = user_ip
+# @app.route ('/')
+# def index():
+#     user_ip = request.remote_addr
+#     response = make_response(redirect('/hello'))
+#     session['user_ip'] = user_ip
 
-    return response
+#     return response
 
 @app.route('/viz', methods=['GET','POST'])
 def viz():

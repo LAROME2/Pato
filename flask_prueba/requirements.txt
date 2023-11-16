@@ -10,3 +10,4 @@ flask-testing
 pandas
 matplotlib
 plotly
+Flask-Login

@@ -3,7 +3,11 @@
 {% block title %}Título Personalizado{% endblock %}
 
 {% block content %}
-<div class = "fondo">
+<div class="fondo">
+    {% if current_user.is_authenticated %}
+        <p>¡Hola, {{ current_user.username }}!</p>
+        <p><a href="{{ url_for('logout') }}">Cerrar sesión</a></p>
+    {% else %}
     <div class="veen">
         <div class="login-btn splits">
             <p>¿Ya eres usuario?</p>
@@ -14,19 +18,19 @@
             <button>Regístrate</button>
         </div>
         <div class="wrapper">
-            <form id="login" tabindex="500">
+            <form id="login" tabindex="500" method="post" action="{{ url_for('login') }}">
                 <img src="{{ url_for('static', filename='images/freezoAzul.png') }}" height="50" width="200">
                 <h3>Iniciar Sesión</h3>
                 <div class="mail">
-                    <input type="email" id="email">
-                    <label>Mail or Nombre de Usuario</label>
+                    <input type="text" name="username" id="username" required>
+                    <label>Nombre de Usuario</label>
                 </div>
                 <div class="passwd">
-                    <input type="password" id="password">
+                    <input type="password" name="password" id="password" required>
                     <label>Contraseña</label>
                 </div>
                 <div class="submit">
-                    <button class="dark">Login</button>
+                    <button type="submit" class="dark">Login</button>
                 </div>
             </form>
             <form id="register" tabindex="502">
@@ -54,6 +58,8 @@
             </form>
         </div>
     </div>
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}
