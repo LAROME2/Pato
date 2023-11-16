@@ -30,9 +30,48 @@ def get_refris():
 
 def filter_data(selected_refri):
     conn = sqlite3.connect('mqtt_data.sqlite')
-    df = pd.read_sql_query(f"SELECT * FROM mqtt_data WHERE id_Refri = {selected_refri} ORDER BY tiempo DESC", conn)
+    df = pd.read_sql_query(f"SELECT * FROM mqtt_data WHERE id_Refri = {selected_refri} ORDER BY tiempo DESC limit 10", conn)
     conn.close()
     return df
+
+def get_latest_data_for_refri(refri_id):
+    conn = sqlite3.connect('mqtt_data.sqlite')
+    query = f"SELECT temperatura, tiempo FROM mqtt_data WHERE id_Refri = {refri_id} ORDER BY tiempo DESC LIMIT 1"
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+
+    # Check if any data is returned
+    if not df.empty:
+        latest_data = {
+            'temperature': df.iloc[0]['temperatura'],
+            'date': df.iloc[0]['tiempo']
+        }
+        return latest_data
+    else:
+        return None
+
+def get_latest_data_before_for_refri(refri_id):
+    conn = sqlite3.connect('mqtt_data.sqlite')
+    query = f"SELECT temperatura, tiempo FROM mqtt_data WHERE id_Refri = {refri_id} ORDER BY tiempo DESC LIMIT 2"
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+
+    # Check if there are at least two records
+    if len(df) >= 2:
+        latest_data_before = {
+            'temperature': df.iloc[1]['temperatura'],
+            'date': df.iloc[1]['tiempo']
+        }
+        return latest_data_before
+    else:
+        return None
+
+def calculate_percentage_change(current_value, previous_value):
+    if previous_value != 0:
+        return ((current_value - previous_value) / abs(previous_value)) * 100
+    else:
+        # Handle division by zero
+        return None
 
 @app.cli.command()
 def test():
@@ -67,55 +106,18 @@ def index():
 @app.route('/viz', methods=['GET','POST'])
 def viz():
     if request.method == 'GET':
-        conn = sqlite3.connect('mqtt_data.sqlite')
-        df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 10", conn)
-        conn.close()
-
-        # Extracting data for the table
-        tabla1 = df[["tiempo","temperatura"]]
-        
-        # Get unique refris
-        refris = list(df["id_Refri"].unique())
-
-        # Get the selected refri from the request
+        refris = get_refris()
         selected_refri = request.args.get('refri', refris[0])  # Default to the first refri if not specified
+        df = filter_data(selected_refri)
 
-        # Filter the DataFrame based on the selected refri
-        filtered_df = df[df['id_Refri'] == int(selected_refri)]
+        tabla1 = df[["tiempo", "temperatura"]]
+        tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)
 
-        latest_temperature = filtered_df.iloc[0]['temperatura']
-        latest_date = filtered_df.iloc[0]['tiempo']
-
-        tabla_html = filtered_df.to_html(classes='table table-bordered table-striped', index=False)
-
-        fig = px.line(filtered_df, x='tiempo', y='temperatura',text='temperatura')
+        fig = px.line(tabla1, x='tiempo', y='temperatura', text='temperatura')
         fig.update_traces(textposition="bottom right")
 
-        return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html(), refris=refris, selected_refri=selected_refri, latest_temperature=latest_temperature, latest_date=latest_date)
-        
-    elif requet.method == "POST":
-        conn = sqlite3.connect('mqtt_data.sqlite')
-        df = pd.read_sql_query("SELECT * FROM mqtt_data ORDER BY tiempo DESC LIMIT 10", conn)
-        conn.close()
+        return render_template('viz.html', tabla_html=tabla_html, plot=fig.to_html(), refris=refris, selected_refri=selected_refri)
 
-        # Extracting data for the table
-        tabla1 = df[["tiempo","temperatura"]]
-        
-        # Get unique refris
-        refris = list(df["id_Refri"].unique())
-
-        # Get the selected refri from the request
-        selected_refri = request.args.get('refri', refris[0])  # Default to the first refri if not specified
-
-        # Filter the DataFrame based on the selected refri
-        filtered_df = df[df['id_Refri'] == int(selected_refri)]
-
-        tabla_html = filtered_df.to_html(classes='table table-bordered table-striped', index=False)
-
-        fig = px.line(filtered_df, x='tiempo', y='temperatura',text='temperatura')
-        fig.update_traces(textposition="bottom right")
-
-        return render_template('viz.html',tabla_html=tabla_html, plot=fig.to_html(), refris=refris, selected_refri=selected_refri)
 
 @app.route('/historic', methods=['GET', 'POST'])
 def historic():
@@ -152,6 +154,35 @@ def hello():
         return redirect(url_for('index'))
 
     return render_template('hello.html', **context)
+
+@app.route ('/dashboard', methods=['GET'])
+def dashboard():
+    refris = get_refris()  # Assuming get_refris() returns a list of refrigerator IDs
+
+    latest_data_per_refri = {}  # Dictionary to store latest data for each refri
+
+    for refri in refris:
+        latest_data = get_latest_data_for_refri(refri)
+        latest_data_before = get_latest_data_before_for_refri(refri)
+
+        if latest_data and latest_data_before:
+            # Calculate percentage change
+            percentage_change = calculate_percentage_change(
+                latest_data['temperature'], latest_data_before['temperature']
+            )
+            
+            # Add data to the dictionary
+            latest_data_per_refri[refri] = {
+                'temperature': latest_data['temperature'],
+                'date': latest_data['date'],
+                'percentage_change': percentage_change
+            }
+        else:
+            # Handle case when no data is available
+            latest_data_per_refri[refri] = None
+
+    # Pass the data to the template
+    return render_template('dashboard.html', refris=refris, latest_data_per_refri=latest_data_per_refri)
 
 
 if __name__ == '__main__':

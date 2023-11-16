@@ -12,8 +12,9 @@
         </select>
         <input type="submit" value="Submit">
     </form>
-    
-    {{ tabla_html | safe }}
+    <div style="overflow-y: auto; max-height: 300px;">
+        {{ tabla_html | safe }}
+    </div>
 
     <h1>Gráfica de Datos para Refri {{ selected_refri }}</h1>
     {{ plot | safe }}
