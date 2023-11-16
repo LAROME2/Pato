@@ -13,7 +13,7 @@ cursor.execute('''
         alarma BOOLEAN,
         wifi_datos TEXT,
         bat_elec TEXT,
-        tiempo TIMESTAMP DEFAULT (datetime('now', 'localtime'))
+        tiempo TEXT
     )
 ''')
 
