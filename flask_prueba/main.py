@@ -34,6 +34,12 @@ def filter_data(selected_refri):
     conn.close()
     return df
 
+def filter_data_hist(selected_refri):
+    conn = sqlite3.connect('mqtt_data.sqlite')
+    df = pd.read_sql_query(f"SELECT * FROM mqtt_data WHERE id_Refri = {selected_refri} ORDER BY tiempo DESC", conn)
+    conn.close()
+    return df
+
 def get_latest_data_for_refri(refri_id):
     conn = sqlite3.connect('mqtt_data.sqlite')
     query = f"SELECT temperatura, tiempo FROM mqtt_data WHERE id_Refri = {refri_id} ORDER BY tiempo DESC LIMIT 1"
@@ -127,7 +133,7 @@ def historic():
     if request.method == 'GET':
         refris = get_refris()
         selected_refri = request.args.get('refri', refris[0])  # Default to the first refri if not specified
-        df = filter_data(selected_refri)
+        df = filter_data_hist(selected_refri)
 
         # Creating an HTML table from the filtered DataFrame
         tabla_html = df.to_html(classes='table table-bordered table-striped', index=False)

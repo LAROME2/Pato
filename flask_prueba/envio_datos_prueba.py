@@ -3,7 +3,6 @@ import time
 import random
 import json
 
-
 # Función para simular una base de datos y generar datos aleatorios
 def obtener_datos_simulados():
     # En este ejemplo, generamos un valor de temperatura aleatorio entre 20 y 30 grados Celsius.
