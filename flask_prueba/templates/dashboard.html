@@ -17,7 +17,7 @@
                 <div style="margin-top: 20px;">
                     <h3>Latest Temperature: {{ latest_data_per_refri[refri]['temperature'] }}°C</h3>
                     <p>Latest Date: {{ latest_data_per_refri[refri]['date'] }}</p>
-                    <p>Cambio vs Previo: {{ latest_data_per_refri[refri]['percentage_change'] }}%</p>
+                    <p>Cambio vs Previo: {{ '%.2f'|format(latest_data_per_refri[refri]['percentage_change']) }}%</p>
                 </div>
             {% else %}
                 <p>No data available for Refrigerator ID {{ refri }}</p>

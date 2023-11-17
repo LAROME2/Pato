@@ -16,7 +16,7 @@ cursor.execute('''
         tiempo TEXT
     )
 ''')
-
+# TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 # Guardar los cambios y cerrar la conexión
 conn.commit()
 conn.close()
