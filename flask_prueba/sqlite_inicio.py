@@ -13,10 +13,10 @@ cursor.execute('''
         alarma BOOLEAN,
         wifi_datos TEXT,
         bat_elec TEXT,
-        tiempo TIMESTAMP DEFAULT (datetime('now', 'localtime'))
+        tiempo TEXT
     )
 ''')
-
+# TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 # Guardar los cambios y cerrar la conexión
 conn.commit()
 conn.close()
