@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 
 
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'SUPER SECRETO'
@@ -101,13 +102,26 @@ def not_found(error):
 def login():
     return render_template('login.html')
 
+
+@app.route('/welcome', methods=['GET','POST'])
+def welcome():
+    return render_template('welcome.html')
+
 @app.route ('/')
 def index():
     user_ip = request.remote_addr
-    response = make_response(redirect('/hello'))
+    response = make_response(redirect('/welcome'))
     session['user_ip'] = user_ip
 
     return response
+
+@app.route ('/otra_pagina')
+def otra_pagina():
+    return render_template('login.html')
+
+@app.route ('/otra_pagina2')
+def otra_pagina2():
+    return redirect(url_for('dashboard'))
 
 @app.route('/viz', methods=['GET','POST'])
 def viz():
@@ -124,6 +138,10 @@ def viz():
 
         fig = px.line(tabla1, x='tiempo', y='temperatura', text='temperatura')
         fig.update_traces(textposition="bottom right")
+
+        fig.update_layout(
+            margin=dict(t=0), # Ajusta este valor según tus necesidades
+        )
 
         return render_template('viz.html', tabla_html=tabla_html, plot=fig.to_html(), refris=refris, selected_refri=selected_refri, latest_date=latest_date, latest_temperature=latest_temperature)
 
@@ -160,7 +178,7 @@ def hello():
 
         flash('Nombre de usuario registrado con éxito')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('dashboard'))
 
     return render_template('hello.html', **context)
 
@@ -169,7 +187,7 @@ def dashboard():
     refris = get_refris()  # Assuming get_refris() returns a list of refrigerator IDs
 
     latest_data_per_refri = {}  # Dictionary to store latest data for each refri
-
+    
     for refri in refris:
         latest_data = get_latest_data_for_refri(refri)
         latest_data_before = get_latest_data_before_for_refri(refri)
@@ -189,10 +207,64 @@ def dashboard():
         else:
             # Handle case when no data is available
             latest_data_per_refri[refri] = None
+        # ... (código previo)
 
-    # Pass the data to the template
-    return render_template('dashboard.html', refris=refris, latest_data_per_refri=latest_data_per_refri)
+        # Extract data for plotting
+        labels = []
+        temperatures = []
 
+        for refri, data in latest_data_per_refri.items():
+            if data:
+                labels.append(refri)
+                temperatures.append(data['temperature'])
+        # Convert labels to integers
+        int_labels = [int(label) for label in labels]
+        
+        # Define colores específicos para las barras
+
+
+        # Create a bar chart with Plotly Express
+        fig = px.bar(x=int_labels, y=temperatures, labels={'x': 'Refrigerator', 'y': 'Temperature'})
+        fig.update_traces(marker_color=['#284664', '#6EBEFF'])
+
+
+        # Update layout for better visualization
+        fig.update_layout(xaxis_title_text='Dispositivo', yaxis_title_text='Temperatura (°C)')
+        fig.update_xaxes(type='category')
+        
+        fig.update_layout(
+            xaxis_title_text='Refrigerador',
+            yaxis_title_text='Temperatura (°C)',
+            margin=dict(t=40)  # Ajusta este valor según tus necesidades
+        )
+
+
+        # Convert the Plotly figure to HTML for rendering in the template
+        plot_div = fig.to_html(full_html=False)
+
+        semanas = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        refri1 = [24, 25, 24, 25, 24, 26, 24, 25, 21]
+        refri2 = [22, 25, 23, 25, 24, 27, 21, 25, 21]
+        data = {'Semanas': semanas, 'Refri1': refri1, 'Refri2': refri2}
+        df = pd.DataFrame(data)
+
+        fig2 = px.line(df, x='Semanas', y=['Refri1', 'Refri2'], labels={'value': 'Temperatura (°C)'})
+
+        # Cambia el color de la línea Refri1 a celeste
+        fig2.update_traces(line=dict(color='#284664'), selector=dict(name='Refri1'))
+
+        # Cambia el color de la línea Refri2 a azul
+        fig2.update_traces(line=dict(color='#6EBEFF'), selector=dict(name='Refri2'))
+
+        fig2.update_layout(
+            margin=dict(t=40), # Ajusta este valor según tus necesidades
+            showlegend=False
+        )
+
+        plot_div2 = fig2.to_html(full_html=False)
+
+    # Pass the data and the plot to the template
+    return render_template('dashboard.html', refris=refris, latest_data_per_refri=latest_data_per_refri, plot_div=plot_div, plot_div2=plot_div2)
 
 if __name__ == '__main__':
     app.run(debug=True)

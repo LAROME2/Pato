@@ -1,0 +1,105 @@
+<!--{% extends "base.html" %}-->
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %} 
+
+    <head>
+        <meta charset ="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>Freezo Main</title>
+
+        <!-- SELECTED FONT RALEWAY-->
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;500;800&display=swap" rel="stylesheet">
+
+        <!-- Material Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+
+        <!-- Custom Css -->
+        <link rel="stylesheet" href="css/main.css">
+       
+    </head>
+
+    <body>
+            <!-- Main -->
+            <main class="main-container">
+                <div class="main-title">
+                    <!--<div class="left">-->
+                    <p class="font-weight-bold"> MAIN DASHBOARD</p>
+                    <!--</div>-->
+                    <!--
+                    <div class="right">
+                        <span class="material-icons-outlined">add</span>
+                    </div>
+                    -->
+                    <!--<p class="font-weight-bold"> MAIN DASHBOARD</p>-->
+                </div>
+
+                <div class="main-cards">
+
+                    <div class="card"> 
+                        <div class="card-inner">
+                            <p class="text-primary"><Datag>FREEZO 1</Datag></p>
+                            <span class="material-icons-outlined text-blue2">analytics</span>
+                        </div>
+                        <span class="text-primary font-weight-bold">249</span>
+                    </div>
+
+                    <div class="card"> 
+                        <div class="card-inner">
+                            <p class="text-primary"><Datag>FREEZO 2</Datag></p>
+                            <span class="material-icons-outlined text-blue">analytics</span>
+                        </div>
+                        <span class="text-primary font-weight-bold">83</span>
+                    </div>
+
+                    <div class="card"> 
+                        <div class="card-inner">
+                            <p class="text-primary"><Datag>ADD DEVICE</Datag></p>
+                            <span class="material-icons-outlined text-green">add</span>
+                        </div>
+                        <span class="text-primary font-weight-bold">-</span>
+                    </div>
+
+                </div>
+                <div class="charts">
+
+                    <div class="charts-card">
+                      <p class="chart-title">My FREEZO'S Devices</p>
+                      <div id="bar-chart"></div>
+                    </div>
+          
+                    <div class="charts-card">
+                      <p class="chart-title">General Graph</p>
+                      <div id="area-chart"></div>
+                </div>
+            </main>
+            
+            <!-- End Main -->
+
+        <!-- Scripts -->
+        
+        <!-- ApexCharts -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
+        <!-- Custom Js -->
+        <script>
+            var sidebarOpen = false;
+            var sidebar = document.getElementById("sidebar");
+    
+            function openSidebar() {
+                if (!sidebarOpen) {
+                    sidebar.classList.add("sidebar-responsive");
+                    sidebarOpen = true;
+                }
+            }
+    
+            function closeSidebar() {
+                if (sidebarOpen) {
+                    sidebar.classList.remove("sidebar-responsive");
+                    sidebarOpen = false;
+                }
+            }
+        </script>
+    </body>
+{% endblock %}

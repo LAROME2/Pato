@@ -1,21 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Scrollable Table</h1>
-    
-    <form method="GET" action="{{ url_for('historic') }}">
-        <label for="refri">Seleccione un Refri:</label>
-        <select name="refri" id="refri">
-            {% for refri in refris %}
-                <option value="{{ refri }}" {% if refri == selected_refri %} selected {% endif %}>{{ refri }}</option>
-            {% endfor %}
-        </select>
-        <input type="submit" value="Submit">
-    </form>
+    <main class="main-container">
+        <div class="main-title">
+            <p class="font-weight-bold">HISTORIAL DE DATOS</p>
+        </div>
+        
+        <div class="option-select">
+            <form method="GET" action="{{ url_for('historic') }}">
+                <label for="refri">Seleccione un Refri:</label>
+                <select name="refri" id="refri">
+                    {% for refri in refris %}
+                        <option value="{{ refri }}" {% if refri == selected_refri %} selected {% endif %}>{{ refri }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
 
-    <h2>Lista de Refris Disponibles:</h2>
-    
-    <div style="overflow-y: auto; max-height: 800px;">
-        {{ tabla_html | safe }}
-    </div>
+        <div class="table"> 
+            <p class="table-title2">Dispositivo: {{ selected_refri }}</p>
+            <div style="overflow-y: auto; max-height: 900px;">
+                {{ tabla_html | safe }}
+            </div>
+        </div>
+    </main>
+
 {% endblock %}

@@ -1,0 +1,50 @@
+
+<head>
+  <title>Freezo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;800&display=swap" rel="stylesheet">
+  <style>
+    body{
+        background-image: url("{{ url_for('static', filename='images/Imagen1.jpeg') }}");
+        height: 100vh;
+        background-size: cover;
+        background-position: center center;
+        position: relative;
+    }
+  </style>
+</head>
+
+
+<body>
+    <div class="welcome">
+        
+        <div class="wrapper">
+            <div class= "logo">
+                <img src="{{ url_for('static', filename='images/FreezoWhite.png') }}" alt="logo" href="#">
+            </div>
+        </div>
+
+
+        <div class="welcome-text">
+        <h1>Keep it cold.</h1>
+        <br> 
+        <br> 
+        <p>Enlaza tu dispositivo: #IID09</p>
+        <br> 
+        <br> 
+        <button type="button" onclick="enlazar()">Enlazar</button>
+
+        </div>
+    </div>
+       
+    <script>
+        function enlazar(){
+            window.location.href = "{{ url_for('otra_pagina')}}";
+        }
+    </script>
+
+</body>
+
+</html>
+
+

@@ -1,33 +1,60 @@
-{% extends 'bootstrap/base.html'%}
+{% extends 'bootstrap/base.html' %}
 
-{% block head%}
-    {{ super()}}
+{% block head %}
+    {{ super() }}
     <meta http-equiv="refresh" content="10">
-    <title> {% block title%} Flask Prueba | {%endblock%} </title>
+    <title>{% block title %} Flask Prueba | {% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-{% endblock%}
-    
-{% block body%}
-    {%block navbar%}
-        {%include 'navbar.html'%}
-    {% endblock %}
-
-    {%for message in get_flashed_messages() %}
-        <div class="alert alert-success alert-dismissible">
-            <button type="button" data-dismiss="alert" class="close">&times;</button>
-            {{message}}
+      <!-- Header -->
+    <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+        <span class="material-icons-outlined">menu</span>
         </div>
-    {% endfor %}
+        <div class="header-left">
+        <!-- ICONO IZQUIERDA -->
+        <span class="material-icons-outlined">search</span>
+        </div>
+        <div class="header-right">
+        <!-- ICONOS DERECHA -->
+        <span class="material-icons-outlined">notifications</span>
+        <span class="material-icons-outlined">email</span>
+        <span class="material-icons-outlined">account_circle</span>
+        </div>
+    </header>
+    <aside id="sidebar">
+        {% include 'navbar.html' %}
+    </aside>
+    <!-- End Header -->
+{% endblock %}
 
-    {% block content %}
-    {% endblock %}
+{% block body %}
+    <div class="grid-container">
+        <main class="main-container">
+            {% block navbar %}
+                {% include 'navbar.html' %}
+            {% endblock %}
+
+            {% for message in get_flashed_messages() %}
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" data-dismiss="alert" class="close">&times;</button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+        
     {% block scripts %}
-        {{ super()}}
+    {{ super() }}
     {% endblock %}
-{% endblock%}
+
+{% endblock %}
